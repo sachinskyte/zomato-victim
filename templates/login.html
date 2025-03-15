@@ -1,0 +1,56 @@
+<!-- Save this as templates/login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Zomato Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>Zomato</h1>
+                <p>Restaurant Dashboard</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="login-form">
+                <h2>Login to Dashboard</h2>
+                {% if error %}
+                <div class="error">{{ error }}</div>
+                {% endif %}
+                <form action="{{ url_for('login') }}" method="post">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <!-- No CSRF token - intentionally vulnerable -->
+                    <div class="form-group">
+                        <button type="submit" class="btn">Login</button>
+                    </div>
+                </form>
+                <div class="login-hint">
+                    <p>Hint: Try 'admin' / 'admin123' or 'user1' / 'password123'</p>
+                    <p>Security note: This form is intentionally vulnerable to SQL injection</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 Zomato Restaurant Dashboard. For educational purposes only.</p>
+        </footer>
+    </div>
+</body>
+</html>

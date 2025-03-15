@@ -1,0 +1,64 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zomato - Restaurant Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1><i class="fas fa-utensils"></i> Zomato</h1>
+                <p>Restaurant Dashboard</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('login') }}"><i class="fas fa-user"></i> Login</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="welcome">
+                <h2>Welcome to Zomato Restaurant Dashboard</h2>
+                <p>Manage your restaurant, view orders, and engage with customers all in one place.</p>
+                <a href="{{ url_for('login') }}" class="btn"><i class="fas fa-sign-in-alt"></i> Login to Dashboard</a>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-store feature-icon"></i>
+                    <h3>Restaurant Management</h3>
+                    <p>Add and manage restaurants, menus, and promotions with ease.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-clipboard-list feature-icon"></i>
+                    <h3>Order Tracking</h3>
+                    <p>Monitor and manage incoming orders in real-time with instant notifications.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-star feature-icon"></i>
+                    <h3>Customer Reviews</h3>
+                    <p>View and respond to customer feedback and ratings to improve service.</p>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#">About Us</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+                <p>&copy; 2025 Zomato Restaurant Dashboard. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
