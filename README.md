@@ -22,7 +22,7 @@ Zomato is a deliberately vulnerable Flask web application designed for ethical h
      ```
    - On Windows:
      ```bash
-     .\env\Scripts\Activate.ps1
+     .\venv\Scripts\Activate.ps1
      ```
 
 ### Step 2: Install Required Dependencies
