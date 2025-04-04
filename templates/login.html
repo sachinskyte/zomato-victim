@@ -6,50 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Zomato Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="Login to Zomato - Discover the best food & drinks">
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">
-                <h1>Zomato</h1>
-                <p>Restaurant Dashboard</p>
+                <h1><i class="fa-solid fa-utensils"></i> Zomato</h1>
+                <p>Discover the best food & drinks</p>
             </div>
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('index') }}"><i class="fa-solid fa-home"></i> Home</a></li>
                 </ul>
             </nav>
         </header>
         
         <main>
             <div class="login-form">
-                <h2>Login to Dashboard</h2>
+                <h2><i class="fa-solid fa-right-to-bracket"></i> Login to Dashboard</h2>
                 {% if error %}
-                <div class="error">{{ error }}</div>
+                <div class="error"><i class="fa-solid fa-triangle-exclamation"></i> {{ error }}</div>
                 {% endif %}
                 <form action="{{ url_for('login') }}" method="post">
                     <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" required>
+                        <label for="username"><i class="fa-solid fa-user"></i> Username:</label>
+                        <input type="text" id="username" name="username" required placeholder="Enter your username">
                     </div>
                     <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" required>
+                        <label for="password"><i class="fa-solid fa-lock"></i> Password:</label>
+                        <input type="password" id="password" name="password" required placeholder="Enter your password">
                     </div>
                     <!-- No CSRF token - intentionally vulnerable -->
                     <div class="form-group">
-                        <button type="submit" class="btn">Login</button>
+                        <button type="submit" class="btn"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
                     </div>
                 </form>
                 <div class="login-hint">
-                    <p>Hint: Try 'admin' / 'admin123' or 'user1' / 'password123'</p>
-                    <p>Security note: This form is intentionally vulnerable to SQL injection</p>
+                    <p><i class="fa-solid fa-lightbulb"></i> <strong>Hint:</strong> Try 'admin' / 'admin123' or 'user1' / 'password123'</p>
+                    <p><i class="fa-solid fa-shield-halved"></i> <strong>Security note:</strong> This form is intentionally vulnerable to SQL injection</p>
                 </div>
             </div>
         </main>
         
         <footer>
-            <p>&copy; 2025 Zomato Restaurant Dashboard. For educational purposes only.</p>
+            <p>&copy; 2025 Zomato Restaurant Dashboard. All rights reserved.</p>
         </footer>
     </div>
 </body>

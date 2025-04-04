@@ -6,29 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zomato Admin Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="Zomato Admin Dashboard - Manage users, restaurants and orders">
+    <!-- Add CSRF token for enhanced security -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">
-                <h1>Zomato</h1>
+                <h1><i class="fa-solid fa-utensils"></i> Zomato</h1>
                 <p>Admin Dashboard</p>
             </div>
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url_for('admin_dashboard') }}">Admin Panel</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+                    <li><a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-user-shield"></i> Admin Panel</a></li>
+                    <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
                 </ul>
             </nav>
         </header>
         
         <main>
-            <h2>Admin Dashboard</h2>
+            <h2><i class="fa-solid fa-lock"></i> Admin Dashboard</h2>
             
             <div class="dashboard-grid">
                 <div class="dashboard-card">
-                    <h3>Users</h3>
+                    <h3><i class="fa-solid fa-users"></i> Users</h3>
                     <table>
                         <thead>
                             <tr>
@@ -36,6 +40,7 @@
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>Role</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,7 +49,11 @@
                                 <td>{{ user.id }}</td>
                                 <td>{{ user.username }}</td>
                                 <td>{{ user.email }}</td>
-                                <td>{{ user.role }}</td>
+                                <td>{% if user.role == 'admin' %}<span class="badge admin"><i class="fa-solid fa-user-shield"></i> Admin</span>{% else %}<span class="badge user"><i class="fa-solid fa-user"></i> User</span>{% endif %}</td>
+                                <td>
+                                    <button class="btn-sm btn-warning"><i class="fa-solid fa-edit"></i></button>
+                                    <button class="btn-sm btn-danger"><i class="fa-solid fa-trash-alt"></i></button>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -52,7 +61,7 @@
                 </div>
                 
                 <div class="dashboard-card">
-                    <h3>Restaurants</h3>
+                    <h3><i class="fa-solid fa-store"></i> Restaurants</h3>
                     <table>
                         <thead>
                             <tr>
@@ -69,8 +78,24 @@
                                 <td>{{ restaurant.id }}</td>
                                 <td>{{ restaurant.name }}</td>
                                 <td>{{ restaurant.address }}</td>
-                                <td>{{ restaurant.cuisine }}</td>
-                                <td>{{ restaurant.rating }}/5</td>
+                                <td><span class="badge cuisine">{{ restaurant.cuisine }}</span></td>
+                                <td>
+                                    <div class="rating">
+                                        {% for i in range(restaurant.rating|int) %}
+                                        <i class="fa-solid fa-star"></i>
+                                        {% endfor %}
+                                        {% if restaurant.rating % 1 >= 0.5 %}
+                                        <i class="fa-solid fa-star-half-stroke"></i>
+                                        {% for i in range(4 - restaurant.rating|int) %}
+                                        <i class="fa-regular fa-star"></i>
+                                        {% endfor %}
+                                        {% else %}
+                                        {% for i in range(5 - restaurant.rating|int) %}
+                                        <i class="fa-regular fa-star"></i>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -78,7 +103,7 @@
                 </div>
                 
                 <div class="dashboard-card">
-                    <h3>Order Management</h3>
+                    <h3><i class="fa-solid fa-truck-fast"></i> Order Management</h3>
                     <table>
                         <thead>
                             <tr>
@@ -97,19 +122,19 @@
                                 <td>{{ order.username }}</td>
                                 <td>{{ order.restaurant_name }}</td>
                                 <td>${{ order.total_price }}</td>
-                                <td>{{ order.status }}</td>
+                                <td class="status-{{ order.status|lower }}">{{ order.status }}</td>
                                
                                 <td>
-                                    <!-- Vulnerable form without CSRF protection -->
+                                    <!-- Vulnerable form without CSRF protection (intentional) -->
                                     <form action="{{ url_for('process_order') }}" method="post">
                                         <input type="hidden" name="order_id" value="{{ order.id }}">
-                                        <select name="status">
+                                        <select name="status" class="status-select">
                                             <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
                                             <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
                                             <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
                                             <option value="Cancelled" {% if order.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
                                         </select>
-                                        <button type="submit" class="btn">Update</button>
+                                        <button type="submit" class="btn-sm"><i class="fa-solid fa-check"></i> Update</button>
                                     </form>
                                 </td>
                             </tr>
@@ -117,14 +142,44 @@
                         </tbody>
                     </table>
                 </div>
-                
-              
             </div>
         </main>
         
         <footer>
-            <p>&copy; 2025 Zomato Restaurant Dashboard. For educational purposes only.</p>
+            <p>&copy; 2025 Zomato Restaurant Dashboard. All rights reserved.</p>
         </footer>
     </div>
+
+    <script>
+        // Simple client-side validation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Highlight table rows on hover
+            const tableRows = document.querySelectorAll('tbody tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.classList.add('active');
+                });
+                row.addEventListener('mouseleave', function() {
+                    this.classList.remove('active');
+                });
+            });
+
+            // Add visual feedback for status changes
+            const statusSelects = document.querySelectorAll('.status-select');
+            statusSelects.forEach(select => {
+                select.addEventListener('change', function() {
+                    const status = this.value.toLowerCase();
+                    const cell = this.closest('tr').querySelector('td:nth-child(5)');
+                    
+                    // Remove all status classes
+                    cell.classList.remove('status-pending', 'status-processing', 'status-delivered', 'status-cancelled');
+                    
+                    // Add new status class
+                    cell.classList.add(`status-${status}`);
+                    cell.textContent = this.value;
+                });
+            });
+        });
+    </script>
 </body>
-</html>  <!-- Vulnerable form
+</html>

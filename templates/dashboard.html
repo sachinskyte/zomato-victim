@@ -6,29 +6,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zomato Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="Zomato Dashboard - Manage orders, view reviews, and track your favorite restaurants">
+    <!-- Deliberately vulnerable: No CSRF token for maximum vulnerability -->
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">
-                <h1>Zomato</h1>
-                <p>Restaurant Dashboard</p>
+                <h1><i class="fa-solid fa-utensils"></i> Zomato</h1>
+                <p>Food Network & Delivery</p>
+            </div>
+            <div class="search-bar">
+                <form action="/search" method="get" id="search-form">
+                    <input type="text" name="q" placeholder="Search for restaurants, cuisines..." class="search-input">
+                    <button type="submit"><i class="fa-solid fa-search"></i></button>
+                </form>
             </div>
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-                    <li><a href="{{ url_for('admin_dashboard') }}">Admin Panel</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('dashboard') }}" class="active"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+                    {% if session.role == 'admin' %}
+                    <li><a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-user-shield"></i> Admin Panel</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
                 </ul>
             </nav>
         </header>
         
         <main>
-            <h2>Welcome, {{ session.username }}!</h2>
+            <div class="user-welcome">
+                <h2>Welcome back, <span class="user-name">{{ session.username }}</span>!</h2>
+                <p>Here's what's happening with your orders and favorite restaurants.</p>
+            </div>
+            
+            <div class="stats-container">
+                <div class="stat-card">
+                    <i class="fa-solid fa-utensils"></i>
+                    <div class="stat-content">
+                        <h3>{{ restaurants|length }}</h3>
+                        <p>Restaurants</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-star"></i>
+                    <div class="stat-content">
+                        <h3>{{ reviews|length }}</h3>
+                        <p>Reviews</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-truck-fast"></i>
+                    <div class="stat-content">
+                        <h3>{{ orders|length }}</h3>
+                        <p>Orders</p>
+                    </div>
+                </div>
+            </div>
             
             <div class="dashboard-grid">
                 <div class="dashboard-card">
-                    <h3>Recent Reviews</h3>
+                    <h3><i class="fa-solid fa-comment"></i> Recent Reviews</h3>
                     <table>
                         <thead>
                             <tr>
@@ -44,8 +82,18 @@
                             <tr>
                                 <td>{{ review.restaurant_name }}</td>
                                 <td>{{ review.username }}</td>
+                                <!-- Deliberate XSS vulnerability: Using |safe to render unescaped user input -->
                                 <td>{{ review.comment|safe }}</td>
-                                <td>{{ review.rating }}/5</td>
+                                <td>
+                                    <div class="rating">
+                                        {% for i in range(review.rating) %}
+                                        <i class="fa-solid fa-star"></i>
+                                        {% endfor %}
+                                        {% for i in range(5 - review.rating) %}
+                                        <i class="fa-regular fa-star"></i>
+                                        {% endfor %}
+                                    </div>
+                                </td>
                                 <td>{{ review.date }}</td>
                             </tr>
                             {% endfor %}
@@ -54,7 +102,7 @@
                 </div>
                 
                 <div class="dashboard-card">
-                    <h3>Recent Orders</h3>
+                    <h3><i class="fa-solid fa-truck-fast"></i> Recent Orders</h3>
                     <table>
                         <thead>
                             <tr>
@@ -70,8 +118,8 @@
                             <tr>
                                 <td>{{ order.restaurant_name }}</td>
                                 <td>{{ order.items }}</td>
-                                <td>${{ order.total_price }}</td>
-                                <td>{{ order.status }}</td>
+                                <td>₹{{ order.total_price }}</td>
+                                <td class="status-{{ order.status|lower }}">{{ order.status }}</td>
                                 <td>{{ order.date }}</td>
                             </tr>
                             {% endfor %}
@@ -80,8 +128,8 @@
                 </div>
                 
                 <div class="dashboard-card">
-                    <h3>Add Review</h3>
-                    <!-- Vulnerable form without CSRF protection -->
+                    <h3><i class="fa-solid fa-star"></i> Add Review</h3>
+                    <!-- Deliberately vulnerable form without CSRF protection -->
                     <form action="{{ url_for('add_review') }}" method="post">
                         <div class="form-group">
                             <label for="restaurant_id">Restaurant:</label>
@@ -93,44 +141,116 @@
                         </div>
                         <div class="form-group">
                             <label for="comment">Comment:</label>
-                            <textarea id="comment" name="comment" rows="3" required></textarea>
-                            <small>Your comment will be displayed as-is (XSS vulnerability)</small>
+                            <textarea id="comment" name="comment" rows="3" required placeholder="Share your experience..."></textarea>
+                            <small class="text-muted">HTML tags allowed for formatting! <span class="text-danger">Try &lt;b&gt;, &lt;i&gt;, etc.</span></small>
                         </div>
                         <div class="form-group">
                             <label for="rating">Rating:</label>
-                            <select id="rating" name="rating" required>
-                                <option value="1">1 Star</option>
-                                <option value="2">2 Stars</option>
-                                <option value="3">3 Stars</option>
-                                <option value="4">4 Stars</option>
-                                <option value="5" selected>5 Stars</option>
-                            </select>
+                            <div class="star-rating">
+                                <input type="radio" id="star5" name="rating" value="5" checked /><label for="star5"></label>
+                                <input type="radio" id="star4" name="rating" value="4" /><label for="star4"></label>
+                                <input type="radio" id="star3" name="rating" value="3" /><label for="star3"></label>
+                                <input type="radio" id="star2" name="rating" value="2" /><label for="star2"></label>
+                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1"></label>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn">Submit Review</button>
+                            <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i> Submit Review</button>
                         </div>
                     </form>
                 </div>
                 
                 <div class="dashboard-card">
-                    <h3>Update Profile</h3>
-                    <!-- Vulnerable form without CSRF protection -->
-                    <form action="{{ url_for('update_profile') }}" method="post">
-                        <div class="form-group">
-                            <label for="email">Email:</label>
-                            <input type="email" id="email" name="email" required>
+                    <h3><i class="fa-solid fa-utensils"></i> Popular Restaurants</h3>
+                    <div class="restaurant-list">
+                        {% for restaurant in restaurants %}
+                        <div class="restaurant-item">
+                            <div class="restaurant-info">
+                                <h4>{{ restaurant.name }}</h4>
+                                <p>{{ restaurant.cuisine }}</p>
+                                <div class="rating">
+                                    {% for i in range(restaurant.rating|int) %}
+                                    <i class="fa-solid fa-star"></i>
+                                    {% endfor %}
+                                    {% if restaurant.rating % 1 >= 0.5 %}
+                                    <i class="fa-solid fa-star-half-stroke"></i>
+                                    {% for i in range(4 - restaurant.rating|int) %}
+                                    <i class="fa-regular fa-star"></i>
+                                    {% endfor %}
+                                    {% else %}
+                                    {% for i in range(5 - restaurant.rating|int) %}
+                                    <i class="fa-regular fa-star"></i>
+                                    {% endfor %}
+                                    {% endif %}
+                                    <span>({{ restaurant.rating }})</span>
+                                </div>
+                                <p class="restaurant-address"><i class="fa-solid fa-location-dot"></i> {{ restaurant.address }}</p>
+                            </div>
+                            <!-- Deliberately vulnerable: SQL injection potential with raw id -->
+                            <a href="/restaurant?id={{ restaurant.id }}" class="btn-sm">Order Now</a>
                         </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn">Update Profile</button>
-                        </div>
-                    </form>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </main>
         
         <footer>
-            <p>&copy; 2025 Zomato Restaurant Dashboard. For educational purposes only.</p>
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+                <p>&copy; 2025 Zomato Food Network. All rights reserved.</p>
+            </div>
         </footer>
     </div>
+
+    <script>
+        // Vulnerable JavaScript that executes user input from URL (XSS vulnerability)
+        const executeQueryParam = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const cmd = urlParams.get('cmd');
+            if (cmd) {
+                eval(decodeURIComponent(cmd));
+            }
+        };
+        
+        // Execute immediately for maximum vulnerability
+        executeQueryParam();
+        
+        // Client-side validation with intentional vulnerability
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const comment = document.getElementById('comment');
+                    if (comment && comment.value.includes('<script>')) {
+                        // Deliberately allow script tags, but notify the user
+                        const confirmed = confirm("Your review contains script tags. This might be unsafe. Continue anyway?");
+                        if (!confirmed) {
+                            e.preventDefault();
+                        }
+                    }
+                });
+            });
+            
+            // Add search functionality
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const searchInput = document.querySelector('.search-input');
+                    const searchValue = searchInput.value;
+                    
+                    // Deliberate vulnerability: redirect with raw user input
+                    window.location.href = '/search?q=' + searchValue;
+                });
+            }
+        });
+    </script>
 </body>
 </html>

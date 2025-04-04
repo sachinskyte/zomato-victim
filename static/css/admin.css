@@ -1,405 +1,328 @@
-/* Enhanced Zomato Admin Dashboard CSS */
-/* General Reset */
+/* 
+   Zomato Admin Dashboard CSS
+   A comprehensive stylesheet for the Zomato Admin Dashboard
+   Designed for modern browsers with a responsive layout
+*/
+
+/* ---------- Base Styles and CSS Reset ---------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 :root {
-    --primary-color: #cb202d;
-    --primary-light: #ff4c59;
-    --primary-dark: #960015;
-    --secondary-color: #33373d;
-    --accent-color: #f8b700;
-    --light-gray: #f5f5f5;
-    --medium-gray: #e0e0e0;
-    --dark-gray: #666;
-    --text-color: #333;
-    --success-color: #4caf50;
-    --warning-color: #ff9800;
-    --danger-color: #f44336;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
+    /* Main color palette - Updated to match Zomato branding */
+    --primary-color: #e23744;
+    --primary-dark: #c01f1f;
+    --primary-light: #fa8282;
+    --secondary-color: #333333;
+    --accent-color: #f5a623;
+    
+    /* Neutral colors */
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #6c757d;
+    --black: #343a40;
+    --white: #ffffff;
+    
+    /* Status colors */
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    
+    /* Typography */
+    --base-font-size: 16px;
+    --heading-font: 'Montserrat', sans-serif;
+    --body-font: 'Open Sans', sans-serif;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 3rem;
+    
+    /* Border radius */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 16px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+
+html {
+    font-size: var(--base-font-size);
+    scroll-behavior: smooth;
 }
 
 body {
-    background-color: #f9f9f9;
-    color: var(--text-color);
+    font-family: var(--body-font);
     line-height: 1.6;
-}
-
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-/* Header Styles */
-header {
-    background-color: white;
-    box-shadow: var(--shadow);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    border-bottom: 1px solid var(--medium-gray);
-}
-
-.logo {
+    color: var(--black);
+    background-color: var(--light-gray);
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
 }
 
-.logo h1 {
+/* ---------- Typography ---------- */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--heading-font);
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-md);
+    color: var(--secondary-color);
+}
+
+h1 {
+    font-size: 2.5rem;
     color: var(--primary-color);
-    font-size: 2.2rem;
-    font-weight: 700;
-    letter-spacing: -1px;
-    margin-bottom: -5px;
+    letter-spacing: -0.5px;
 }
 
-.logo p {
+h2 {
+    font-size: 2rem;
     color: var(--secondary-color);
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 25px;
-}
-
-nav a {
-    text-decoration: none;
-    color: var(--secondary-color);
-    font-weight: 500;
-    font-size: 1.05rem;
-    padding: 8px 12px;
-    border-radius: 4px;
-    transition: var(--transition);
-}
-
-nav a:hover {
-    color: var(--primary-color);
-    background-color: rgba(203, 32, 45, 0.08);
-}
-
-/* Main Content Styles */
-main {
-    padding: 30px 0;
-}
-
-main h2 {
-    color: var(--secondary-color);
-    font-size: 1.8rem;
-    margin-bottom: 25px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--primary-light);
-    display: inline-block;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
-    gap: 25px;
-    margin-bottom: 30px;
-}
-
-.dashboard-card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    transition: var(--transition);
-    padding: 20px;
-}
-
-.dashboard-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.dashboard-card h3 {
-    color: var(--primary-dark);
-    font-size: 1.4rem;
-    margin-bottom: 15px;
+    position: relative;
+    margin-bottom: var(--spacing-xl);
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--spacing-sm);
 }
 
-.dashboard-card h3::before {
-    content: "";
-    display: inline-block;
-    width: 10px;
-    height: 10px;
+h2:after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100px;
+    height: 4px;
     background-color: var(--primary-color);
-    border-radius: 50%;
+    border-radius: var(--border-radius-sm);
+    transition: width var(--transition-normal);
 }
 
-/* Table Styles */
+h2:hover:after {
+    width: 150px;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-lg);
+    color: var(--secondary-color);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+h3 i {
+    color: var(--primary-color);
+}
+
+/* Table styles */
 table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 0.95rem;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    background-color: var(--white);
 }
 
 thead {
-    background-color: var(--light-gray);
+    background-color: var(--secondary-color);
+    color: var(--white);
 }
 
 th {
+    padding: var(--spacing-md);
     text-align: left;
-    padding: 12px 15px;
-    border-bottom: 2px solid var(--medium-gray);
-    color: var(--secondary-color);
     font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 td {
-    padding: 12px 15px;
+    padding: var(--spacing-md);
     border-bottom: 1px solid var(--medium-gray);
+    vertical-align: middle;
+    transition: background-color var(--transition-fast);
 }
 
-tbody tr:nth-child(even) {
-    background-color: rgba(245, 245, 245, 0.5);
+tbody tr.active, tbody tr:hover {
+    background-color: rgba(245, 245, 245, 0.7);
 }
 
-tbody tr {
-    transition: var(--transition);
+tbody tr:last-child td {
+    border-bottom: none;
 }
 
-tbody tr:hover {
-    background-color: rgba(203, 32, 45, 0.05);
-}
-
-/* Form Elements */
-form {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-
-select, input, button {
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid var(--medium-gray);
-    font-size: 0.95rem;
-    outline: none;
-    transition: var(--transition);
-}
-
-select:focus, input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(203, 32, 45, 0.2);
-}
-
-.btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: var(--transition);
-}
-
-.btn:hover {
-    background-color: var(--primary-dark);
-    transform: translateY(-2px);
-}
-
-/* Status Colors */
-td:nth-child(5) {
+.badge {
+    display: inline-block;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    color: var(--white);
+    font-size: 0.8rem;
     font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-tr:has(td:nth-child(5):contains("Pending")) td:nth-child(5) {
-    color: var(--warning-color);
+.badge.admin {
+    background-color: var(--primary-color);
 }
 
-tr:has(td:nth-child(5):contains("Processing")) td:nth-child(5) {
-    color: var(--accent-color);
+.badge.user {
+    background-color: var(--info);
 }
 
-tr:has(td:nth-child(5):contains("Delivered")) td:nth-child(5) {
-    color: var(--success-color);
+.badge.cuisine {
+    background-color: var(--accent-color);
 }
 
-tr:has(td:nth-child(5):contains("Cancelled")) td:nth-child(5) {
-    color: var(--danger-color);
+.status-pending {
+    color: var(--warning);
+    font-weight: 600;
+    position: relative;
+    padding-left: 15px;
 }
 
-/* Admin Actions Section */
-.admin-actions {
-    padding: 15px;
-    background-color: rgba(244, 67, 54, 0.05);
-    border-radius: 6px;
-    margin-top: 10px;
-}
-
-.admin-actions p {
-    margin-bottom: 10px;
-    color: var(--danger-color);
-    font-weight: 500;
-}
-
-.admin-actions ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.admin-actions a {
-    display: block;
-    text-decoration: none;
-    color: var(--text-color);
-    background-color: white;
-    padding: 10px 15px;
-    border-radius: 4px;
-    border: 1px solid var(--medium-gray);
-    transition: var(--transition);
-}
-
-.admin-actions a:hover {
-    background-color: var(--danger-color);
-    color: white;
-    border-color: var(--danger-color);
-}
-
-/* Footer Styles */
-footer {
-    text-align: center;
-    padding: 20px 0;
-    margin-top: 40px;
-    border-top: 1px solid var(--medium-gray);
-    color: var(--dark-gray);
-    font-size: 0.9rem;
-}
-
-/* Responsive Styles */
-@media (max-width: 1200px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-    }
-    
-    nav ul {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 10px;
-    }
-    
-    .dashboard-card {
-        overflow-x: auto;
-    }
-    
-    table {
-        min-width: 650px;
-    }
-}
-
-@media (max-width: 480px) {
-    main {
-        padding: 20px 0;
-    }
-    
-    .dashboard-card {
-        padding: 15px;
-    }
-    
-    .logo h1 {
-        font-size: 1.8rem;
-    }
-}
-
-/* Animation Effects */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.dashboard-card {
-    animation: fadeIn 0.5s ease forwards;
-}
-
-.dashboard-card:nth-child(1) {
-    animation-delay: 0.1s;
-}
-
-.dashboard-card:nth-child(2) {
-    animation-delay: 0.2s;
-}
-
-.dashboard-card:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.dashboard-card:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
+.status-pending:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
     width: 8px;
     height: 8px;
+    border-radius: 50%;
+    background-color: var(--warning);
 }
 
-::-webkit-scrollbar-track {
-    background: var(--light-gray);
+.status-processing {
+    color: var(--info);
+    font-weight: 600;
+    position: relative;
+    padding-left: 15px;
 }
 
-::-webkit-scrollbar-thumb {
-    background: var(--dark-gray);
-    border-radius: 4px;
+.status-processing:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--info);
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary-color);
+.status-delivered {
+    color: var(--success);
+    font-weight: 600;
+    position: relative;
+    padding-left: 15px;
 }
 
-/* Focus Visible for Accessibility */
-:focus-visible {
-    outline: 2px solid var(--primary-color);
-    outline-offset: 2px;
+.status-delivered:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--success);
 }
 
-/* Print Media Query */
-@media print {
-    header, footer, .admin-actions {
-        display: none;
-    }
-    
-    body {
-        background: white;
-    }
-    
-    .dashboard-card {
-        break-inside: avoid;
-        box-shadow: none;
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-    }
+.status-cancelled {
+    color: var(--danger);
+    font-weight: 600;
+    position: relative;
+    padding-left: 15px;
 }
+
+.status-cancelled:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--danger);
+}
+
+.btn-sm {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all var(--transition-normal);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-right: var(--spacing-xs);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-sm:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-sm:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-sm.btn-warning {
+    background-color: var(--warning);
+}
+
+.btn-sm.btn-warning:hover {
+    background-color: darken(var(--warning), 10%);
+}
+
+.btn-sm.btn-danger {
+    background-color: var(--danger);
+}
+
+.btn-sm.btn-danger:hover {
+    background-color: darken(var(--danger), 10%);
+}
+
+.btn-sm.btn-info {
+    background-color: var(--info);
+}
+
+.btn-sm.btn-info:hover {
+    background-color: darken(var(

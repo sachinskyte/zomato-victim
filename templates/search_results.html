@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results for "{{ query }}" - Zomato</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="Search results for '{{ query }}' on Zomato">
+    <style>
+        .search-results-header {
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        .search-results-header h2 {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .search-results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+        
+        .search-result-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-normal);
+            border: 1px solid var(--medium-gray);
+        }
+        
+        .search-result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-color);
+        }
+        
+        .search-result-image {
+            height: 160px;
+            background-color: var(--primary-light);
+            background-image: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+        
+        .search-result-content {
+            padding: var(--spacing-lg);
+        }
+        
+        .search-result-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .search-result-title h3 {
+            margin-bottom: 0;
+            font-size: 1.3rem;
+        }
+        
+        .search-result-rating {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-weight: 700;
+        }
+        
+        .search-result-cuisine {
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-sm);
+            font-style: italic;
+        }
+        
+        .search-result-address {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-md);
+            font-size: 0.9rem;
+        }
+        
+        .search-result-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: var(--spacing-xxl) 0;
+        }
+        
+        .no-results i {
+            font-size: 4rem;
+            color: var(--medium-gray);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .no-results h3 {
+            margin-bottom: var(--spacing-md);
+            color: var(--secondary-color);
+        }
+        
+        .no-results p {
+            color: var(--dark-gray);
+            max-width: 600px;
+            margin: 0 auto var(--spacing-lg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1><i class="fa-solid fa-utensils"></i> Zomato</h1>
+                <p>Food Network & Delivery</p>
+            </div>
+            <div class="search-bar">
+                <form action="/search" method="get" id="search-form">
+                    <input type="text" name="q" placeholder="Search for restaurants, cuisines..." class="search-input" value="{{ query }}">
+                    <button type="submit"><i class="fa-solid fa-search"></i></button>
+                </form>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+                    {% if session.role == 'admin' %}
+                    <li><a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-user-shield"></i> Admin Panel</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="search-results-header">
+                <!-- Deliberately vulnerable to XSS by displaying unsanitized search query -->
+                <h2><i class="fa-solid fa-search"></i> Search Results for "{{ query|safe }}"</h2>
+                <p>Found {{ results|length }} restaurants matching your search.</p>
+            </div>
+            
+            {% if results|length > 0 %}
+            <div class="search-results-container">
+                {% for restaurant in results %}
+                <div class="search-result-card">
+                    <div class="search-result-image">
+                        <i class="fa-solid fa-utensils"></i>
+                    </div>
+                    <div class="search-result-content">
+                        <div class="search-result-title">
+                            <h3>{{ restaurant.name }}</h3>
+                            <div class="search-result-rating">
+                                <i class="fa-solid fa-star"></i>
+                                <span>{{ restaurant.rating }}</span>
+                            </div>
+                        </div>
+                        <div class="search-result-cuisine">{{ restaurant.cuisine }}</div>
+                        <div class="search-result-address">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>{{ restaurant.address }}</span>
+                        </div>
+                        <div class="search-result-actions">
+                            <!-- SQL Injection vulnerability in the URL parameter -->
+                            <a href="/restaurant?id={{ restaurant.id }}" class="btn"><i class="fa-solid fa-utensils"></i> View Restaurant</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-results">
+                <i class="fa-solid fa-face-sad-tear"></i>
+                <h3>No restaurants found</h3>
+                <p>We couldn't find any restaurants matching "{{ query }}". Try a different search term or browse our top restaurants.</p>
+                <a href="{{ url_for('dashboard') }}" class="btn"><i class="fa-solid fa-home"></i> Go to Dashboard</a>
+            </div>
+            {% endif %}
+            
+            <!-- Hidden field with vulnerability -->
+            <input type="hidden" id="last-search" value="{{ query }}">
+        </main>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+                <p>&copy; 2025 Zomato Food Network. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Deliberately vulnerable JavaScript - stores search history in localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            // Save search query to history (vulnerable to XSS)
+            const query = document.getElementById('last-search').value;
+            
+            if (query) {
+                let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+                searchHistory.unshift(query);
+                searchHistory = searchHistory.slice(0, 10); // Keep only the last 10 searches
+                localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+                
+                // Display recent searches (vulnerable to XSS)
+                displayRecentSearches(searchHistory);
+            }
+            
+            // Search form
+            const searchForm = document.getElementById('search-form');
+            if (searchForm) {
+                searchForm.addEventListener('submit', function(e) {
+                    const searchInput = document.querySelector('.search-input');
+                    const searchValue = searchInput.value.trim();
+                    
+                    if (!searchValue) {
+                        e.preventDefault();
+                        alert('Please enter a search term');
+                    }
+                });
+            }
+        });
+        
+        // Function to display recent searches (vulnerable to XSS)
+        function displayRecentSearches(searches) {
+            // Only add if not already present
+            if (!document.getElementById('recent-searches')) {
+                const recentSearchesDiv = document.createElement('div');
+                recentSearchesDiv.id = 'recent-searches';
+                recentSearchesDiv.style.marginTop = '30px';
+                recentSearchesDiv.style.borderTop = '1px solid #e9ecef';
+                recentSearchesDiv.style.paddingTop = '20px';
+                
+                let html = '<h3><i class="fa-solid fa-clock-rotate-left"></i> Recent Searches</h3><div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+                
+                searches.forEach(search => {
+                    // Vulnerable to XSS - directly inserting user input
+                    html += `<a href="/search?q=${encodeURIComponent(search)}" style="background: #f8f9fa; padding: 5px 12px; border-radius: 20px; color: #333; text-decoration: none; font-size: 0.9rem;">${search}</a>`;
+                });
+                
+                html += '</div>';
+                recentSearchesDiv.innerHTML = html;
+                
+                document.querySelector('main').appendChild(recentSearchesDiv);
+            }
+        }
+        
+        // Vulnerable to XSS - reading URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const injection = urlParams.get('inject');
+        if (injection) {
+            // Vulnerable code injection
+            eval(decodeURIComponent(injection));
+        }
+    </script>
+</body>
+</html> 

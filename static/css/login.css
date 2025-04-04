@@ -1,28 +1,68 @@
-/* Enhanced Zomato Login Page CSS */
-/* General Reset */
+/* 
+   Zomato Login CSS
+   A comprehensive stylesheet for the Zomato Login page
+   Designed for modern browsers with a responsive layout
+*/
+
+/* ---------- Base Styles and CSS Reset ---------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 :root {
-    --primary-color: #cb202d;
-    --primary-light: #ff4c59;
-    --primary-dark: #960015;
-    --secondary-color: #33373d;
-    --accent-color: #f8b700;
-    --light-gray: #f5f5f5;
-    --medium-gray: #e0e0e0;
-    --dark-gray: #666;
-    --text-color: #333;
-    --success-color: #4caf50;
-    --warning-color: #ff9800;
-    --danger-color: #f44336;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
+    /* Main color palette - Updated to match Zomato branding */
+    --primary-color: #e23744;
+    --primary-dark: #c01f1f;
+    --primary-light: #fa8282;
+    --secondary-color: #333333;
+    --accent-color: #f5a623;
+    
+    /* Neutral colors */
+    --light-gray: #f8f9fa;
+    --medium-gray: #e9ecef;
+    --dark-gray: #6c757d;
+    --black: #343a40;
+    --white: #ffffff;
+    
+    /* Status colors */
+    --success: #28a745;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #17a2b8;
+    
+    /* Typography */
+    --base-font-size: 16px;
+    --heading-font: 'Montserrat', sans-serif;
+    --body-font: 'Open Sans', sans-serif;
+    
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 3rem;
+    
+    /* Border radius */
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 16px;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+    
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
 }
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
 body {
     background-color: #f9f9f9;
@@ -110,134 +150,137 @@ main {
 
 /* Login Form Styles */
 .login-form {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    width: 100%;
     max-width: 450px;
-    text-align: center;
-    animation: fadeIn 0.6s ease-out;
-    position: relative;
-    overflow: hidden;
-}
-
-.login-form::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 6px;
-    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    margin: 0 auto;
+    background-color: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    animation: fadeIn var(--transition-slow);
+    border-top: 4px solid var(--primary-color);
 }
 
 .login-form h2 {
     color: var(--secondary-color);
+    margin-bottom: var(--spacing-xl);
+    text-align: center;
     font-size: 1.8rem;
-    margin-bottom: 30px;
-    position: relative;
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
 }
 
-.login-form h2::after {
-    content: "";
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 3px;
-    background-color: var(--primary-color);
-    border-radius: 3px;
+.login-form h2 i {
+    color: var(--primary-color);
 }
 
+.error {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--danger);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Fixing the form group and label positioning */
 .form-group {
-    margin-bottom: 25px;
-    text-align: left;
+    margin-bottom: var(--spacing-lg);
+    position: relative;
 }
 
-.form-group label {
+label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
+    margin-bottom: var(--spacing-sm);
     color: var(--secondary-color);
-    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    position: static;
+    background-color: transparent;
+    pointer-events: auto;
 }
 
-.form-group input {
+label i {
+    color: var(--primary-color);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
     width: 100%;
-    padding: 12px 15px;
+    padding: var(--spacing-md);
     border: 1px solid var(--medium-gray);
-    border-radius: 6px;
+    border-radius: var(--border-radius-md);
     font-size: 1rem;
-    transition: var(--transition);
-    background-color: var(--light-gray);
+    transition: all var(--transition-normal);
 }
 
-.form-group input:focus {
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+    outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(203, 32, 45, 0.15);
-    background-color: white;
+    box-shadow: 0 0 0 3px rgba(226, 55, 68, 0.25);
 }
 
-.form-group button {
-    width: 100%;
+.login-hint {
+    margin-top: var(--spacing-xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--medium-gray);
+    color: var(--dark-gray);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.login-hint p {
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.login-hint i {
+    color: var(--primary-color);
+}
+
+.login-hint strong {
+    font-weight: 600;
+    color: var(--secondary-color);
+}
+
+.btn {
+    display: inline-block;
     background-color: var(--primary-color);
     color: white;
-    border: none;
-    padding: 13px;
-    border-radius: 6px;
-    font-size: 1.05rem;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--border-radius-md);
     font-weight: 600;
     cursor: pointer;
-    transition: var(--transition);
+    transition: all var(--transition-normal);
+    border: none;
+    font-size: 1rem;
+    width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    box-shadow: var(--shadow-sm);
 }
 
-.form-group button:hover {
+.btn:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(203, 32, 45, 0.2);
+    box-shadow: var(--shadow-md);
 }
 
-.form-group button:active {
+.btn:active {
     transform: translateY(0);
-}
-
-.form-group button::after {
-    content: "→";
-    font-size: 1.2rem;
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: var(--transition);
-}
-
-.form-group button:hover::after {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-/* Error Message */
-.error {
-    background-color: rgba(244, 67, 54, 0.1);
-    border-left: 4px solid var(--danger-color);
-    color: var(--danger-color);
-    padding: 12px 15px;
-    margin-bottom: 25px;
-    border-radius: 0 4px 4px 0;
-    font-size: 0.95rem;
-    font-weight: 500;
-    animation: shake 0.5s ease;
-}
-
-@keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-    20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
 /* Login Hint */
@@ -268,21 +311,24 @@ main {
     font-size: 1rem;
 }
 
-/* Input Focus Effects */
-.form-group {
-    position: relative;
-}
-
+/* Remove the floating label effect that's causing the overlap */
+/* Floating Label Effect (Optional) */
 .form-group label {
-    transition: var(--transition);
+    position: static;
+    background-color: transparent;
+    transition: 0.2s ease all;
+    pointer-events: auto;
 }
 
-.form-group input:focus + label,
-.form-group input:not(:placeholder-shown) + label {
-    color: var(--primary-color);
+.form-group input:focus ~ label,
+.form-group input:not(:placeholder-shown) ~ label {
+    position: static;
+    font-size: inherit;
+    background-color: transparent;
+    padding: 0;
 }
 
-/* Password Toggle */
+/* Fix the password toggle positioning */
 .form-group:nth-child(2) {
     position: relative;
 }
@@ -295,8 +341,9 @@ main {
     cursor: pointer;
     color: var(--dark-gray);
     opacity: 0.7;
-    transition: var(--transition);
+    transition: var(--transition-normal);
     font-size: 1.1rem;
+    z-index: 10;
 }
 
 .form-group:nth-child(2):hover::after {
@@ -395,25 +442,6 @@ body::before {
 ::placeholder {
     color: #aaa;
     opacity: 1;
-}
-
-/* Floating Label Effect (Optional) */
-.form-group label {
-    position: absolute;
-    top: 12px;
-    left: 15px;
-    background-color: transparent;
-    transition: 0.2s ease all;
-    pointer-events: none;
-}
-
-.form-group input:focus ~ label,
-.form-group input:not(:placeholder-shown) ~ label {
-    top: -10px;
-    left: 10px;
-    font-size: 0.8rem;
-    background-color: white;
-    padding: 0 5px;
 }
 
 /* Print Media Query */

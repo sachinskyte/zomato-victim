@@ -4,46 +4,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zomato - Restaurant Dashboard</title>
+    <title>Zomato - Food Delivery & Restaurant Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="Zomato - Discover the best food & drinks in your area">
 </head>
 <body>
     <div class="container">
         <header>
             <div class="logo">
-                <h1><i class="fas fa-utensils"></i> Zomato</h1>
-                <p>Restaurant Dashboard</p>
+                <h1><i class="fa-solid fa-utensils"></i> Zomato</h1>
+                <p>Discover the best food & drinks</p>
             </div>
             <nav>
                 <ul>
-                    <li><a href="{{ url_for('login') }}"><i class="fas fa-user"></i> Login</a></li>
+                    <li><a href="{{ url_for('login') }}" class="btn"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
                 </ul>
             </nav>
         </header>
         
         <main>
             <div class="welcome">
-                <h2>Welcome to Zomato Restaurant Dashboard</h2>
-                <p>Manage your restaurant, view orders, and engage with customers all in one place.</p>
-                <a href="{{ url_for('login') }}" class="btn"><i class="fas fa-sign-in-alt"></i> Login to Dashboard</a>
+                <h2>Discover the best food & restaurants in your area</h2>
+                <p>Order food online from your favorite local restaurants with Zomato. Find restaurants, read reviews, and order food for delivery or pickup.</p>
+                <a href="{{ url_for('login') }}" class="btn"><i class="fa-solid fa-right-to-bracket"></i> Login to Dashboard</a>
             </div>
             
             <div class="features">
                 <div class="feature">
-                    <i class="fas fa-store feature-icon"></i>
-                    <h3>Restaurant Management</h3>
-                    <p>Add and manage restaurants, menus, and promotions with ease.</p>
+                    <i class="fa-solid fa-utensils feature-icon"></i>
+                    <h3>Find Restaurants</h3>
+                    <p>Discover restaurants by cuisine, location, or rating and find the perfect meal.</p>
                 </div>
                 <div class="feature">
-                    <i class="fas fa-clipboard-list feature-icon"></i>
-                    <h3>Order Tracking</h3>
-                    <p>Monitor and manage incoming orders in real-time with instant notifications.</p>
+                    <i class="fa-solid fa-truck-fast feature-icon"></i>
+                    <h3>Fast Delivery</h3>
+                    <p>Get your favorite food delivered to your doorstep with real-time order tracking.</p>
                 </div>
                 <div class="feature">
-                    <i class="fas fa-star feature-icon"></i>
-                    <h3>Customer Reviews</h3>
-                    <p>View and respond to customer feedback and ratings to improve service.</p>
+                    <i class="fa-solid fa-star feature-icon"></i>
+                    <h3>Restaurant Reviews</h3>
+                    <p>Read and write detailed reviews to help others discover great places to eat.</p>
                 </div>
             </div>
         </main>
@@ -56,7 +57,7 @@
                     <a href="#">Terms of Service</a>
                     <a href="#">Contact</a>
                 </div>
-                <p>&copy; 2025 Zomato Restaurant Dashboard. All rights reserved.</p>
+                <p>&copy; 2025 Zomato Food Delivery. All rights reserved.</p>
             </div>
         </footer>
     </div>

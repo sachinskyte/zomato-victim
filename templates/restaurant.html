@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ restaurant.name }} - Zomato</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="Discover {{ restaurant.name }} on Zomato - {{ restaurant.cuisine }} food in {{ restaurant.address }}">
+    <style>
+        /* Restaurant Detail Page Specific CSS */
+        .restaurant-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xl);
+            align-items: flex-start;
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        .restaurant-info {
+            flex: 1;
+        }
+        
+        .restaurant-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .restaurant-title h2 {
+            margin-bottom: 0;
+        }
+        
+        .restaurant-title .cuisine-badge {
+            background-color: var(--primary-color);
+            color: white;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .restaurant-address {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--dark-gray);
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .restaurant-rating {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        
+        .rating-circle {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .restaurant-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .order-section {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-lg);
+            background: white;
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .order-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+        
+        .menu-item {
+            border: 1px solid var(--medium-gray);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius-sm);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+            transition: all var(--transition-normal);
+        }
+        
+        .menu-item:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .menu-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .menu-item-name {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .menu-item-price {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .menu-item-controls {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+        
+        .menu-item-controls button {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid var(--medium-gray);
+            background: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .menu-item-controls button:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .menu-item-controls input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid var(--medium-gray);
+            border-radius: var(--border-radius-sm);
+            padding: var(--spacing-xs);
+        }
+        
+        .review-form {
+            margin-top: var(--spacing-xl);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1><i class="fa-solid fa-utensils"></i> Zomato</h1>
+                <p>Food Network & Delivery</p>
+            </div>
+            <div class="search-bar">
+                <form action="/search" method="get" id="search-form">
+                    <input type="text" name="q" placeholder="Search for restaurants, cuisines..." class="search-input">
+                    <button type="submit"><i class="fa-solid fa-search"></i></button>
+                </form>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('dashboard') }}"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+                    {% if session.role == 'admin' %}
+                    <li><a href="{{ url_for('admin_dashboard') }}"><i class="fa-solid fa-user-shield"></i> Admin Panel</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main>
+            <!-- Restaurant Header -->
+            <div class="restaurant-header">
+                <div class="restaurant-info">
+                    <div class="restaurant-title">
+                        <h2>{{ restaurant.name }}</h2>
+                        <span class="cuisine-badge">{{ restaurant.cuisine }}</span>
+                    </div>
+                    <div class="restaurant-address">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>{{ restaurant.address }}</span>
+                    </div>
+                    <div class="restaurant-rating">
+                        <div class="rating-circle">{{ restaurant.rating }}</div>
+                        <div class="rating-stars">
+                            {% for i in range(restaurant.rating|int) %}
+                            <i class="fa-solid fa-star"></i>
+                            {% endfor %}
+                            {% if restaurant.rating % 1 >= 0.5 %}
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                            {% for i in range(4 - restaurant.rating|int) %}
+                            <i class="fa-regular fa-star"></i>
+                            {% endfor %}
+                            {% else %}
+                            {% for i in range(5 - restaurant.rating|int) %}
+                            <i class="fa-regular fa-star"></i>
+                            {% endfor %}
+                            {% endif %}
+                            <span>({{ reviews|length }} reviews)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="restaurant-actions">
+                        <a href="#order-now" class="btn"><i class="fa-solid fa-utensils"></i> Order Now</a>
+                        <a href="#add-review" class="btn" style="background-color: var(--secondary-color);"><i class="fa-solid fa-comment"></i> Add Review</a>
+                    </div>
+                </div>
+                
+                <!-- Share button - Vulnerable to XSS -->
+                <button class="btn-sm" id="share-button" onclick="shareRestaurant()">
+                    <i class="fa-solid fa-share-nodes"></i> Share
+                </button>
+            </div>
+            
+            <!-- Order Section -->
+            <div class="order-section" id="order-now">
+                <h3><i class="fa-solid fa-clipboard-list"></i> Order from {{ restaurant.name }}</h3>
+                
+                <!-- Deliberately vulnerable form with no CSRF protection -->
+                <form action="/place_order" method="post" id="order-form">
+                    <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
+                    
+                    <div class="order-form">
+                        <div class="menu-item">
+                            <div class="menu-item-header">
+                                <span class="menu-item-name">Butter Chicken</span>
+                                <span class="menu-item-price">₹249</span>
+                            </div>
+                            <p class="text-muted">Tender chicken in a creamy tomato sauce</p>
+                            <div class="menu-item-controls">
+                                <button type="button" onclick="decrementItem('butter_chicken')">-</button>
+                                <input type="number" name="butter_chicken" id="butter_chicken" value="0" min="0" max="10">
+                                <button type="button" onclick="incrementItem('butter_chicken')">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="menu-item">
+                            <div class="menu-item-header">
+                                <span class="menu-item-name">Paneer Tikka</span>
+                                <span class="menu-item-price">₹199</span>
+                            </div>
+                            <p class="text-muted">Cottage cheese marinated and grilled</p>
+                            <div class="menu-item-controls">
+                                <button type="button" onclick="decrementItem('paneer_tikka')">-</button>
+                                <input type="number" name="paneer_tikka" id="paneer_tikka" value="0" min="0" max="10">
+                                <button type="button" onclick="incrementItem('paneer_tikka')">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="menu-item">
+                            <div class="menu-item-header">
+                                <span class="menu-item-name">Veg Biryani</span>
+                                <span class="menu-item-price">₹179</span>
+                            </div>
+                            <p class="text-muted">Fragrant rice with vegetables and spices</p>
+                            <div class="menu-item-controls">
+                                <button type="button" onclick="decrementItem('veg_biryani')">-</button>
+                                <input type="number" name="veg_biryani" id="veg_biryani" value="0" min="0" max="10">
+                                <button type="button" onclick="incrementItem('veg_biryani')">+</button>
+                            </div>
+                        </div>
+                        
+                        <div class="menu-item">
+                            <div class="menu-item-header">
+                                <span class="menu-item-name">Naan</span>
+                                <span class="menu-item-price">₹49</span>
+                            </div>
+                            <p class="text-muted">Freshly baked Indian bread</p>
+                            <div class="menu-item-controls">
+                                <button type="button" onclick="decrementItem('naan')">-</button>
+                                <input type="number" name="naan" id="naan" value="0" min="0" max="10">
+                                <button type="button" onclick="incrementItem('naan')">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: var(--spacing-xl); text-align: right;">
+                        <p class="total-price">Total: ₹<span id="total-price">0</span></p>
+                        <button type="submit" class="btn"><i class="fa-solid fa-shopping-cart"></i> Place Order</button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Reviews Section -->
+            <div class="dashboard-card" style="margin-top: var(--spacing-xl);">
+                <h3><i class="fa-solid fa-comment"></i> Customer Reviews</h3>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Comment</th>
+                            <th>Rating</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for review in reviews %}
+                        <tr>
+                            <td>{{ review.username }}</td>
+                            <!-- Deliberately vulnerable to XSS -->
+                            <td>{{ review.comment|safe }}</td>
+                            <td>
+                                <div class="rating">
+                                    {% for i in range(review.rating) %}
+                                    <i class="fa-solid fa-star"></i>
+                                    {% endfor %}
+                                    {% for i in range(5 - review.rating) %}
+                                    <i class="fa-regular fa-star"></i>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td>{{ review.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                <!-- Add Review Form - Vulnerable to XSS -->
+                <div class="review-form" id="add-review">
+                    <h3><i class="fa-solid fa-star"></i> Add Your Review</h3>
+                    <form action="{{ url_for('add_review') }}" method="post">
+                        <input type="hidden" name="restaurant_id" value="{{ restaurant.id }}">
+                        
+                        <div class="form-group">
+                            <label for="comment">Your Comments:</label>
+                            <textarea id="comment" name="comment" rows="4" required placeholder="Share your experience with {{ restaurant.name }}..."></textarea>
+                            <small class="text-muted">HTML formatting is allowed! Try using &lt;b&gt;, &lt;i&gt;, &lt;u&gt; tags.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="rating">Rating:</label>
+                            <div class="star-rating">
+                                <input type="radio" id="star5" name="rating" value="5" checked /><label for="star5"></label>
+                                <input type="radio" id="star4" name="rating" value="4" /><label for="star4"></label>
+                                <input type="radio" id="star3" name="rating" value="3" /><label for="star3"></label>
+                                <input type="radio" id="star2" name="rating" value="2" /><label for="star2"></label>
+                                <input type="radio" id="star1" name="rating" value="1" /><label for="star1"></label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn"><i class="fa-solid fa-paper-plane"></i> Submit Review</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="#">About Us</a>
+                    <a href="#">Careers</a>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Contact</a>
+                </div>
+                <p>&copy; 2025 Zomato Food Network. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Deliberately vulnerable JavaScript
+        function shareRestaurant() {
+            const restaurantId = "{{ restaurant.id }}";
+            const restaurantName = "{{ restaurant.name }}";
+            
+            // Get the URL parameter for custom sharing message (XSS vulnerability)
+            const urlParams = new URLSearchParams(window.location.search);
+            let shareMsg = urlParams.get('share_msg');
+            
+            if (!shareMsg) {
+                shareMsg = "Check out " + restaurantName + " on Zomato!";
+            }
+            
+            // Unsafe innerHTML usage (XSS vulnerability)
+            const sharePopup = document.createElement('div');
+            sharePopup.style.position = 'fixed';
+            sharePopup.style.top = '50%';
+            sharePopup.style.left = '50%';
+            sharePopup.style.transform = 'translate(-50%, -50%)';
+            sharePopup.style.backgroundColor = 'white';
+            sharePopup.style.padding = '20px';
+            sharePopup.style.borderRadius = '8px';
+            sharePopup.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+            sharePopup.style.zIndex = '1000';
+            sharePopup.style.maxWidth = '400px';
+            
+            // Vulnerable to XSS - directly injecting user input
+            sharePopup.innerHTML = `
+                <h3>Share this Restaurant</h3>
+                <p>${shareMsg}</p>
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button onclick="window.location.href='https://facebook.com/share?url=' + encodeURIComponent(window.location.href)" style="background: #3b5998; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
+                        <i class="fa-brands fa-facebook"></i> Facebook
+                    </button>
+                    <button onclick="window.location.href='https://twitter.com/intent/tweet?text=' + encodeURIComponent('${shareMsg}') + '&url=' + encodeURIComponent(window.location.href)" style="background: #1da1f2; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">
+                        <i class="fa-brands fa-twitter"></i> Twitter
+                    </button>
+                    <button onclick="document.body.removeChild(this.parentNode.parentNode)" style="background: #f8f9fa; color: #333; border: 1px solid #dee2e6; padding: 8px 12px; border-radius: 4px; cursor: pointer; margin-left: auto;">
+                        Close
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(sharePopup);
+        }
+        
+        // Order functionality with deliberately vulnerable price calculation
+        const prices = {
+            'butter_chicken': 249,
+            'paneer_tikka': 199,
+            'veg_biryani': 179,
+            'naan': 49
+        };
+        
+        function incrementItem(id) {
+            const input = document.getElementById(id);
+            if (input.value < 10) {
+                input.value = parseInt(input.value) + 1;
+                updateTotal();
+            }
+        }
+        
+        function decrementItem(id) {
+            const input = document.getElementById(id);
+            if (input.value > 0) {
+                input.value = parseInt(input.value) - 1;
+                updateTotal();
+            }
+        }
+        
+        function updateTotal() {
+            let total = 0;
+            for (const [item, price] of Object.entries(prices)) {
+                const quantity = parseInt(document.getElementById(item).value) || 0;
+                total += price * quantity;
+            }
+            
+            // Parse URL parameter for discount (vulnerable to XSS and manipulation)
+            const urlParams = new URLSearchParams(window.location.search);
+            const discount = parseFloat(urlParams.get('discount') || 0);
+            
+            if (discount > 0) {
+                total = total * (1 - discount/100);
+                // Alert message vulnerable to XSS
+                if (!document.getElementById('discount-msg')) {
+                    const discountMsg = document.createElement('p');
+                    discountMsg.id = 'discount-msg';
+                    discountMsg.style.color = 'green';
+                    discountMsg.style.fontWeight = 'bold';
+                    // Vulnerable to XSS - injecting discount message directly
+                    discountMsg.innerHTML = `Discount applied: ${discount}% off!`;
+                    document.querySelector('.total-price').insertAdjacentElement('beforebegin', discountMsg);
+                }
+            }
+            
+            document.getElementById('total-price').textContent = total.toFixed(2);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTotal();
+            
+            // Execute any command passed in URL (extremely vulnerable)
+            const urlParams = new URLSearchParams(window.location.search);
+            const exec = urlParams.get('exec');
+            if (exec) {
+                try {
+                    eval(decodeURIComponent(exec));
+                } catch (e) {
+                    console.error("Error executing command:", e);
+                }
+            }
+        });
+    </script>
+</body>
+</html> 

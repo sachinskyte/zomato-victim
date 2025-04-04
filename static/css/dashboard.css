@@ -12,11 +12,11 @@
 }
 
 :root {
-    /* Main color palette */
-    --primary-color: #cb202d;
-    --primary-dark: #b71c1c;
-    --primary-light: #e57373;
-    --secondary-color: #2c3e50;
+    /* Main color palette - Updated to match Zomato branding */
+    --primary-color: #e23744;
+    --primary-dark: #c01f1f;
+    --primary-light: #fa8282;
+    --secondary-color: #333333;
     --accent-color: #f5a623;
     
     /* Neutral colors */
@@ -24,6 +24,7 @@
     --medium-gray: #e9ecef;
     --dark-gray: #6c757d;
     --black: #343a40;
+    --white: #ffffff;
     
     /* Status colors */
     --success: #28a745;
@@ -33,7 +34,7 @@
     
     /* Typography */
     --base-font-size: 16px;
-    --heading-font: 'Poppins', sans-serif;
+    --heading-font: 'Montserrat', sans-serif;
     --body-font: 'Open Sans', sans-serif;
     
     /* Spacing */
@@ -61,7 +62,7 @@
 }
 
 /* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
 
 html {
     font-size: var(--base-font-size);
@@ -200,38 +201,26 @@ nav li {
 nav a {
     color: var(--secondary-color);
     font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.5px;
-    padding: var(--spacing-sm) 0;
+    font-size: 0.95rem;
+    padding: var(--spacing-sm) var(--spacing-md);
     position: relative;
     transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    border-radius: var(--border-radius-md);
 }
 
 nav a:hover {
     color: var(--primary-color);
+    background-color: rgba(226, 55, 68, 0.1);
     text-decoration: none;
-}
-
-nav a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--primary-color);
-    transition: width var(--transition-normal);
-}
-
-nav a:hover::after {
-    width: 100%;
 }
 
 /* ---------- Dashboard Grid ---------- */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
     gap: var(--spacing-xl);
     margin-top: var(--spacing-xl);
 }
@@ -239,14 +228,15 @@ nav a:hover::after {
 .dashboard-card {
     background-color: white;
     border-radius: var(--border-radius-md);
-    padding: var(--spacing-xl);
-    box-shadow: var(--shadow-md);
-    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-lg);
+    transition: all var(--transition-normal);
+    border-top: 4px solid var(--primary-color);
 }
 
 .dashboard-card:hover {
+    box-shadow: var(--shadow-md);
     transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
 }
 
 /* ---------- Tables ---------- */
@@ -350,19 +340,21 @@ small {
     display: inline-block;
     background-color: var(--primary-color);
     color: white;
-    padding: var(--spacing-md) var(--spacing-xl);
-    border: none;
-    border-radius: var(--border-radius-sm);
-    cursor: pointer;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-md);
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    transition: background-color var(--transition-fast), transform var(--transition-fast);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    border: none;
+    font-size: 1rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
 }
 
 .btn:hover {
     background-color: var(--primary-dark);
     transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .btn:active {
